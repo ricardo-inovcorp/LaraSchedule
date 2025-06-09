@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
+// No imports needed anymore
 </script>
 
 <template>
-    <div class="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-        <AppLogoIcon class="size-5 fill-current text-white dark:text-black" />
-    </div>
-    <div class="ml-1 grid flex-1 text-left text-sm">
-        <span class="mb-0.5 truncate font-semibold leading-none">Laravel Starter Kit</span>
+    <div class="flex items-center">
+        <img src="/storage/logo/laraschedule_logo.png" alt="LaraSchedule Logo" class="h-8 w-auto" />
+        <div class="ml-1 grid flex-1 text-left text-sm">
+            <span class="mb-0.5 truncate font-semibold leading-none">LaraSchedule</span>
+        </div>
     </div>
 </template>

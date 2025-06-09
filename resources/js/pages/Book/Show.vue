@@ -1,43 +1,49 @@
 <template>
-  <div style="min-height:100vh; background:#fff; color:#222;">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-950 to-gray-900 py-12">
     <Head :title="event && event.name ? `Agendar: ${event.name}` : 'Agendamento'" />
-    <div class="max-w-xl mx-auto py-8">
+    <div class="w-full max-w-xl bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl p-10 border border-white/20">
       <template v-if="event && event.name">
-        <h1 class="text-2xl font-bold mb-2">Agendar: {{ event.name }}</h1>
-        <p class="mb-4 text-gray-700">{{ event.description }}</p>
-        <form @submit.prevent="submit" class="space-y-4 bg-white p-6 rounded shadow">
-          <div>
-            <label class="block mb-1 font-medium" style="color: #000;" >Nome</label>
-            <input v-model="form.name" type="text" class="w-full border rounded px-3 py-2" required />
+        <h1 class="text-3xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text drop-shadow-lg mb-2">
+          Agendar: {{ event.name }}
+        </h1>
+        <p class="mb-6 text-gray-300 text-lg">{{ event.description }}</p>
+        <form @submit.prevent="submit" class="space-y-6">
+          <div class="grid grid-cols-1 gap-4">
+            <div>
+              <label class="block mb-1 font-medium text-gray-200">Nome</label>
+              <input v-model="form.name" type="text" class="w-full border-none rounded-lg px-4 py-3 bg-gray-800/80 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 transition" required placeholder="Seu nome" />
+            </div>
+            <div>
+              <label class="block mb-1 font-medium text-gray-200">E-mail</label>
+              <input v-model="form.email" type="email" class="w-full border-none rounded-lg px-4 py-3 bg-gray-800/80 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 transition" required placeholder="seu@email.com" />
+            </div>
+            <div>
+              <label class="block mb-1 font-medium text-gray-200">Data</label>
+              <input v-model="form.date" type="date" class="w-full border-none rounded-lg px-4 py-3 bg-gray-800/80 text-gray-100 focus:ring-2 focus:ring-blue-500 transition" required />
+            </div>
+            <div>
+              <label class="block mb-1 font-medium text-gray-200">Horário</label>
+              <select v-model="form.time" class="w-full border-none rounded-lg px-4 py-3 bg-gray-800/80 text-gray-100 focus:ring-2 focus:ring-blue-500 transition" required>
+                <option value="" disabled>Selecione...</option>
+                <option v-for="h in availableTimes" :key="h" :value="h">{{ h }}</option>
+              </select>
+            </div>
+            <div v-for="field in customFields" :key="field.id">
+              <label class="block mb-1 font-medium text-gray-200">{{ field.label }}<span v-if="field.required">*</span></label>
+              <input v-if="field.type === 'text'" v-model="form.custom[field.id]" type="text" class="w-full border-none rounded-lg px-4 py-3 bg-gray-800/80 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 transition" :required="field.required" />
+              <!-- Adicione outros tipos conforme necessário -->
+            </div>
           </div>
           <div>
-            <label class="block mb-1 font-medium" style="color: #000;" >E-mail</label>
-            <input v-model="form.email" type="email" class="w-full border rounded px-3 py-2" required />
+            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl shadow-lg font-semibold text-lg hover:scale-105 hover:from-blue-500 hover:to-purple-500 transition-transform duration-200">
+              Agendar
+            </button>
           </div>
-          <div>
-            <label class="block mb-1 font-medium" style="color: #000;" >Data</label>
-            <input v-model="form.date" type="date" class="w-full border rounded px-3 py-2" required />
-          </div>
-          <div>
-            <label class="block mb-1 font-medium" style="color: #000;" >Horário</label>
-            <select v-model="form.time" class="w-full border rounded px-3 py-2" required>
-              <option value="" disabled>Selecione...</option>
-              <option v-for="h in availableTimes" :key="h" :value="h">{{ h }}</option>
-            </select>
-          </div>
-          <div v-for="field in customFields" :key="field.id">
-            <label class="block mb-1 font-medium">{{ field.label }}<span v-if="field.required">*</span></label>
-            <input v-if="field.type === 'text'" v-model="form.custom[field.id]" type="text" class="w-full border rounded px-3 py-2" :required="field.required" />
-            <!-- Adicione outros tipos conforme necessário -->
-          </div>
-          <div>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Agendar</button>
-          </div>
-          <div v-if="success" class="text-green-600 mt-2">{{ success }}</div>
+          <div v-if="success" class="text-green-400 mt-2 text-center font-semibold animate-pulse">{{ success }}</div>
         </form>
       </template>
       <template v-else>
-        <div class="text-center text-gray-600 text-lg py-12">
+        <div class="text-center text-gray-400 text-lg py-12">
           Evento não encontrado ou link inválido.<br />
           Verifique o link ou entre em contato com quem enviou.
         </div>
