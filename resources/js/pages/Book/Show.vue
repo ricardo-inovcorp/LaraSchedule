@@ -39,7 +39,12 @@
               Agendar
             </button>
           </div>
-          <div v-if="success" class="text-green-400 mt-2 text-center font-semibold animate-pulse">{{ success }}</div>
+          <div v-if="success" class="flex flex-col items-center text-green-400 mt-4 text-center font-semibold animate-pulse">
+            <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            {{ success }}
+          </div>
         </form>
       </template>
       <template v-else>
@@ -91,6 +96,15 @@ const availableTimes = computed(() => {
   return times;
 });
 
+// Scroll para a mensagem de sucesso quando ela aparecer
+document.addEventListener('inertia:finish', () => {
+  if (success.value) {
+    setTimeout(() => {
+      document.querySelector('.text-green-400')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }
+});
+
 function submit() {
   const start_datetime = `${form.value.date} ${form.value.time}`;
   const end = new Date(`${form.value.date}T${form.value.time}`);
@@ -102,6 +116,14 @@ function submit() {
     start_datetime,
     end_datetime,
     ...form.value.custom,
+  }, {
+    onSuccess: (page) => {
+      success.value = (page.props.flash && page.props.flash.success) || '';
+      form.value = { name: '', email: '', date: '', time: '', custom: {} };
+      setTimeout(() => {
+        document.querySelector('.text-green-400')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
   });
 }
 </script> 

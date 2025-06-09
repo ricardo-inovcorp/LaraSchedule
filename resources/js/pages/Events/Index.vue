@@ -30,7 +30,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6-6m2 2l-6 6m-2 2h6" /></svg>
                     Editar
                   </Link>
-                  <form :action="`/events/${event.id}`" method="POST" @submit.prevent="destroy(event.id)">
+                  <form :action="`/events/${event.id}`" method="POST" @submit.prevent="askDelete(event.id)">
                     <input type="hidden" name="_method" value="DELETE" />
                     <button type="submit" class="inline-flex items-center gap-1 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1.5 rounded-lg shadow hover:scale-105 transition-transform duration-150">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -44,17 +44,36 @@
         </div>
       </div>
     </div>
+    <ConfirmModal :show="showModal" @confirm="confirmDelete" @cancel="cancelDelete">
+      <template #title>Confirmar Exclusão</template>
+      <template #message>Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita.</template>
+    </ConfirmModal>
   </AppLayout>
 </template>
 
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import ConfirmModal from '@/components/ConfirmModal.vue';
 const props = defineProps({ events: Array });
 
-function destroy(id) {
-  if (confirm('Tem certeza que deseja excluir este evento?')) {
-    router.delete(`/events/${id}`);
+const showModal = ref(false);
+const eventToDelete = ref(null);
+
+function askDelete(id) {
+  eventToDelete.value = id;
+  showModal.value = true;
+}
+function confirmDelete() {
+  if (eventToDelete.value) {
+    router.delete(`/events/${eventToDelete.value}`);
   }
+  showModal.value = false;
+  eventToDelete.value = null;
+}
+function cancelDelete() {
+  showModal.value = false;
+  eventToDelete.value = null;
 }
 </script> 

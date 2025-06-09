@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Carbon\Carbon;
+use App\Mail\AppointmentConfirmation;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -26,6 +28,7 @@ class BookingController extends Controller
             'blockedPeriods' => $blockedPeriods,
             'appointments' => $appointments,
             'customFields' => $customFields,
+            'flash' => ['success' => session('success')],
         ]);
     }
 
@@ -43,8 +46,9 @@ class BookingController extends Controller
         $data['event_id'] = $event->id;
         $data['user_id'] = $event->user_id;
         $data['status'] = 'pending';
-        Appointment::create($data);
-        return redirect()->back()->with('success', 'Agendamento realizado com sucesso!');
+        $appointment = Appointment::create($data);
+        Mail::to($appointment->email)->send(new AppointmentConfirmation($appointment));
+        return redirect()->route('book.show', $slug)->with('success', 'Agendamento realizado com sucesso!');
     }
 
     // Lista todos os eventos do usuário para exibir os links públicos

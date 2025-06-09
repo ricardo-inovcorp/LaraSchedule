@@ -20,6 +20,11 @@ const mainNavItems: NavItem[] = [
         icon: Calendar,
     },
     {
+        title: 'Calendário',
+        href: '/calendar',
+        icon: Calendar,
+    },
+    {
         title: 'Disponibilidades',
         href: '/availabilities',
         icon: Clock,
